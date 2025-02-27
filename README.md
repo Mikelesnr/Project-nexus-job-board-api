@@ -57,14 +57,14 @@ The primary objectives of the job board backend are:
 ### API Documentation
 
 - Use Swagger for detailed API documentation.
-- Host documentation at `/api/docs` for frontend integration.
+- Host documentation at `/swagger/` for frontend integration.
 
 ## Routes and Deliverables
 
 ### Job Postings
 
 - **GET /api/jobs/**: Retrieve all job postings.
-  - Deliverable: List of job postings with details (title, description, location, category).
+  - Deliverable: List of job postings with details (title, description, location, company_name, category).
 - **GET /api/jobs/{id}/**: Retrieve a specific job posting by ID.
   - Deliverable: Details of the specified job posting.
 - **POST /api/jobs/**: Create a new job posting.
