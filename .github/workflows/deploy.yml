@@ -28,8 +28,8 @@ jobs:
 
       - name: Install dependencies on VPS
         run: |
-          ssh your_user@your_vps_ip 'cd /var/www/Project-nexus-job-board-api/job_board_api && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --no-input'
+          ssh mikelesnr@139.84.227.102 'cd /var/www/Project-nexus-job-board-api/job_board_api && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --no-input'
 
       - name: Restart Gunicorn
         run: |
-          ssh your_user@your_vps_ip 'sudo systemctl restart gunicorn'
+          ssh mikelesnr@139.84.227.102 'sudo systemctl restart gunicorn'
