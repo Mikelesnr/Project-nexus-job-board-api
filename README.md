@@ -64,7 +64,8 @@ The primary objectives of the job board backend are:
 ### Job Postings
 
 - **GET /api/jobs/**: Retrieve all job postings.
-  - Deliverable: List of job postings with details (title, description, location, company_name, category).
+  - Deliverable: List of job postings with details (title, description, location, company_name, category, created_by).
+  - this route can be filtered by title,category and created_by
 - **GET /api/jobs/{id}/**: Retrieve a specific job posting by ID.
   - Deliverable: Details of the specified job posting.
 - **POST /api/jobs/**: Create a new job posting.
