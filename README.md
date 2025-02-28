@@ -147,3 +147,5 @@ The primary objectives of the job board backend are:
 
 - Swagger documentation is detailed and hosted.
 - README provides clear setup instructions.
+
+# pushed through git actions
