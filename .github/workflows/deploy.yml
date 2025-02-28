@@ -1,0 +1,35 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.10.12"
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Copy files to VPS
+        run: |
+          rsync -avz --exclude 'venv' --exclude '__pycache__' . your_user@your_vps_ip:/var/www/Project-nexus-job-board-api/job_board_api
+
+      - name: Install dependencies on VPS
+        run: |
+          ssh your_user@your_vps_ip 'cd /var/www/Project-nexus-job-board-api/job_board_api && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --no-input'
+
+      - name: Restart Gunicorn
+        run: |
+          ssh your_user@your_vps_ip 'sudo systemctl restart gunicorn'
