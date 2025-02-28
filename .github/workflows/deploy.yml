@@ -24,7 +24,7 @@ jobs:
 
       - name: Copy files to VPS
         run: |
-          rsync -avz --exclude 'venv' --exclude '__pycache__' . your_user@your_vps_ip:/var/www/Project-nexus-job-board-api/job_board_api
+          rsync -avz --exclude 'venv' --exclude '__pycache__' . mikelesnr@139.84.227.102:/var/www/Project-nexus-job-board-api/job_board_api
 
       - name: Install dependencies on VPS
         run: |
