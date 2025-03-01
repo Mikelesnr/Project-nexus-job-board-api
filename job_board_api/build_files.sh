@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Create the staticfiles_build directory if it doesn't exist
+rm -rf staticfiles
+
 mkdir -p staticfiles
 
 #install dependancies
