@@ -31,9 +31,16 @@ jobs:
         run: |
           rsync -avz --exclude 'venv' --exclude '__pycache__' . mikelesnr@139.84.227.102:/var/www/Project-nexus-job-board-api/job_board_api
 
-      - name: Install dependencies on VPS
+      - name: Set up and activate virtual environment, install dependencies, and migrate database
         run: |
-          ssh mikelesnr@139.84.227.102 'cd /var/www/Project-nexus-job-board-api/job_board_api && source venv/bin/activate && pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --no-input'
+          ssh mikelesnr@139.84.227.102 '
+          cd /var/www/Project-nexus-job-board-api &&
+          source venv/bin/activate &&
+          cd job_board_api &&
+          pip install -r requirements.txt &&
+          python manage.py migrate &&
+          python manage.py collectstatic --no-input
+          '
 
       - name: Restart Gunicorn
         run: |
