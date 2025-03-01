@@ -65,7 +65,7 @@ The primary objectives of the job board backend are:
 
 - **GET /api/jobs/**: Retrieve all job postings.
   - Deliverable: List of job postings with details (title, description, location, company_name, category, created_by).
-  - this route can be filtered by title,category and created_by
+  - This route can be filtered by title, category, and created_by.
 - **GET /api/jobs/{id}/**: Retrieve a specific job posting by ID.
   - Deliverable: Details of the specified job posting.
 - **POST /api/jobs/**: Create a new job posting.
@@ -100,50 +100,106 @@ The primary objectives of the job board backend are:
 - **POST /api/auth/register/**: User registration.
   - Deliverable: Confirmation of user registration.
 
-## Implementation Process
+## Project Setup
 
-### Git Commit Workflow
+### Prerequisites
 
-#### Initial Setup:
+- Python (version 3.8 or higher)
+- PostgreSQL
+- Virtualenv
 
-- `feat: set up Django project with PostgreSQL`
+### Step 1: Clone the Repository
 
-#### Feature Development:
+- bash:
+- git clone https://github.com/your-repo/job-board-backend.git
+- cd job-board-backend
 
-- `feat: implement job posting and filtering APIs`
-- `feat: add role-based authentication for admins and users`
+### Step 2: Set Up Virtual Environment
 
-#### Optimization:
+- bash:
+- python -m venv venv
+- source venv/bin/activate
 
-- `perf: optimize job search queries with indexing`
+### Step 3: Install Dependencies
 
-#### Documentation:
+- pip install -r requirements.txt (requrements.txt is inside the job_board_api app)
 
-- `feat: integrate Swagger for API documentation`
-- `docs: update README with usage details`
+### Step 4: Set Up PostgreSQL Database
 
-## Submission Details
+- install PostgreSQL (google how to do this for your os)
+- Start PostgreSQL service:
+  - For Ubuntu: sudo systemctl start postgresql
+  - For macOS (using Homebrew): brew services start postgresql
+- Create a new PostgreSQL user:
+  - bash:
+  - sudo -i -u postgres
+  - createuser --interactive
+- Create a new PostgreSQL database:
+  - bash:
+  - createdb job_board_db
+- Set a password for the PostgreSQL user:
+  - bash
+  - psql
+- In the PostgreSQL prompt, set a password for the user you just created:
+  - Sql
+  - ALTER USER your_postgres_user WITH PASSWORD 'your_password';
+  - \q
 
-- Deployment: Host the API and Swagger documentation
+### Step 5: Configure Django to Use PostgreSQL
 
-## Evaluation Criteria
+- Install PostgreSQL dependencies:pip
+  - install psycopg2-binary
+- Update settings.py file:
 
-### Functionality
+  - python:
+  - DATABASES = {
+    'default': {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'job_board_db',
+    'USER': 'your_postgres_user',
+    'PASSWORD': 'your_password',
+    'HOST': 'localhost',
+    'PORT': '5432',
+    }
+    }
 
-- APIs handle job and category CRUD operations effectively.
-- Role-based authentication works as intended.
+### Step 6: Apply Migrations
 
-### Code Quality
+- bash:
+- python manage.py migrate
 
-- Code is modular and follows Django best practices.
-- Database schema is normalized and efficient.
+### Step 7: Run the Development Server
 
-### Performance
+- python manage.py runserver
 
-- Job search is fast and responsive.
-- Indexed queries enhance filtering efficiency.
+### Step 8: Access the Application
 
-### Documentation
+- Open your web browser and navigate to:
+- http://127.0.0.1:8000
 
-- Swagger documentation is detailed and hosted.
-- README provides clear setup instructions.
+### Useful Sites
+
+Here are some useful documentation sites for the technologies used in this project:
+
+- **Django Documentation**
+
+  - [Django Official Documentation](https://docs.djangoproject.com/en/stable/)
+  - Comprehensive guide for Django, including tutorials, references, and how-to guides.
+
+- **PostgreSQL Documentation**
+
+  - [PostgreSQL Official Documentation](https://www.postgresql.org/docs/)
+  - Detailed documentation for PostgreSQL, including setup, configuration, and SQL commands.
+
+- **JWT (JSON Web Tokens) Documentation**
+
+  - [JWT Introduction](https://jwt.io/introduction/)
+  - An overview of JSON Web Tokens and how they work.
+  - [PyJWT Documentation](https://pyjwt.readthedocs.io/en/stable/)
+  - Documentation for the PyJWT library used for encoding and decoding JWT in Python.
+
+- **Swagger Documentation**
+  - [Swagger Official Documentation](https://swagger.io/docs/)
+  - Documentation for Swagger, including OpenAPI Specification, tools, and tutorials.
+  - [drf-yasg Documentation](https://drf-yasg.readthedocs.io/en/stable/)
+  - Documentation for drf-yasg, a tool for generating real Swagger/OpenAPI 2.0 specifications from a Django Rest Framework API.
