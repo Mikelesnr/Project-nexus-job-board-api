@@ -1,10 +1,4 @@
-#!/bin/bash
-
-rm -rf staticfiles
-
-mkdir -p staticfiles
-
-#install dependancies
+#install dependences
 pip install -r requirements.txt
 
 # Collect static files
