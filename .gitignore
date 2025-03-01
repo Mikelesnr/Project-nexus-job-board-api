@@ -7,3 +7,4 @@ job_board_api/staticfiles/admin
 /job_board_api/staticfiles/drf-yasg
 job_board_api/staticfiles/rest_framework
 job_board_api/staticfiles/rest_framework_swagger
+job_board_api/staticfiles
