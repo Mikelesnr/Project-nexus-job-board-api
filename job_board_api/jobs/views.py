@@ -10,7 +10,12 @@ from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import JobPostFilter
 
+from django.shortcuts import render
+
 # Create your views here.
+def home(request):
+    return render(request, 'home.html')
+
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
