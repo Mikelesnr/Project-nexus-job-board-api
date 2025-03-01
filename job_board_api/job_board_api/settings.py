@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=1_9k0&e#fo2#)6k4ts2pred6ib(bi^od1#1mc+j@t5qz0f6^^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['139.84.227.102','127.0.0.1', 'localhost', '.vercel.app', 'now.sh']
+ALLOWED_HOSTS = ['139.84.227.102','127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -98,11 +98,11 @@ load_dotenv(dotenv_path=env_path)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'MdHdUrNMLICTrSNyOAxoYqLwNQiTbzvy',
-        'HOST': 'shuttle.proxy.rlwy.net',
-        'PORT': '56224',
+        'NAME': 'job_board_db',
+        'USER': os.getenv('DBUSER'),
+        'PASSWORD': os.getenv('DBPASSWORD'),
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
