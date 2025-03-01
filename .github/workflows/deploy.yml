@@ -34,9 +34,8 @@ jobs:
       - name: Set up and activate virtual environment, install dependencies, and migrate database
         run: |
           ssh ${{ secrets.VPS_IP }} '
-          cd /var/www/Project-nexus-job-board-api &&
+          cd /var/www/Project-nexus-job-board-api/job_board_api &&
           source venv/bin/activate &&
-          cd job_board_api &&
           pip install -r requirements.txt &&
           python manage.py migrate &&
           python manage.py collectstatic --no-input
