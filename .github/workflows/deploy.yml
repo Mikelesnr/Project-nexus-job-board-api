@@ -29,11 +29,11 @@ jobs:
 
       - name: Copy files to VPS
         run: |
-          rsync -avz --exclude 'venv' --exclude '__pycache__' . root@139.84.227.102:/var/www/Project-nexus-job-board-api/job_board_api
+          rsync -avz --exclude 'venv' --exclude '__pycache__' . ${{ secrets.VPS_IP }}:/var/www/Project-nexus-job-board-api/job_board_api
 
       - name: Set up and activate virtual environment, install dependencies, and migrate database
         run: |
-          ssh root@139.84.227.102 '
+          ssh ${{ secrets.VPS_IP }} '
           cd /var/www/Project-nexus-job-board-api &&
           source venv/bin/activate &&
           cd job_board_api &&
@@ -44,4 +44,4 @@ jobs:
 
       - name: Restart Gunicorn
         run: |
-          ssh root@139.84.227.102 'systemctl restart gunicorn'
+          ssh ${{ secrets.VPS_IP }} 'systemctl restart gunicorn'
