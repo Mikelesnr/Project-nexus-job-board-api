@@ -1,5 +1,3 @@
-# jobs/management/commands/seed_data.py
-
 from django.core.management.base import BaseCommand
 from jobs.models import JobCategory, JobPost
 from django.contrib.auth.models import User
@@ -23,14 +21,29 @@ class Command(BaseCommand):
     def seed_jobs(self):
         user = User.objects.first()  # Get the first user
         categories = JobCategory.objects.all()
-        for i in range(10):
+        experience_levels = ['Entry', 'Mid', 'Senior']
+        job_titles = [
+            'Software Engineer', 'Marketing Specialist', 'Financial Analyst', 
+            'Sales Manager', 'HR Coordinator', 'Data Scientist', 
+            'UX Designer', 'Project Manager', 'Content Writer', 'Customer Support'
+        ]
+        locations = [
+            'New York, NY', 'San Francisco, CA', 'Chicago, IL', 
+            'Los Angeles, CA', 'Austin, TX', 'Boston, MA', 
+            'Seattle, WA', 'Denver, CO', 'Atlanta, GA', 'Miami, FL'
+        ]
+        companies = ['Acme Corp', 'Stark Enterprises', 'Wayne Enterprises', 
+                     'Oscorp Industries', 'Pied Piper', 'Hooli']
+
+        for i in range(20):
             job_post = JobPost(
-                title=f'Job Title {i+1}',
+                title=random.choice(job_titles),
                 description='This is a sample job description.',
-                location='Sample Location',
-                company_name='Sample Company',
+                location=random.choice(locations),
+                company_name=random.choice(companies),
                 category=random.choice(categories),
-                created_by=user
+                created_by=user,
+                experience_level=random.choice(experience_levels)
             )
             job_post.save()
         self.stdout.write('Job posts seeded.')
