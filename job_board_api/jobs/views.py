@@ -1,15 +1,13 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import JobCategory, JobPost
-from .serializers import JobCategorySerializer, JobPostSerializer, RegisterSerializer
-from rest_framework import generics
+from .serializers import JobCategorySerializer, JobPostSerializer, RegisterSerializer, UserProfileSerializer
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import JobPostFilter
-
 from django.shortcuts import render
 
 # Create your views here.
@@ -36,6 +34,14 @@ class RegisterView(generics.CreateAPIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
 
 class JobCategoryViewSet(viewsets.ModelViewSet):
     queryset = JobCategory.objects.all()
