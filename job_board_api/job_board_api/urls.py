@@ -31,11 +31,12 @@ schema_view = get_schema_view(
         default_version='v1',
         description="API documentation for the Job Board Backend",
         terms_of_service="https://www.google.com/policies/terms/",
-        contact=openapi.Contact(email="contact@example.com"),
+        contact=openapi.Contact(email="mwanza.n.m@gmail.com"),
         license=openapi.License(name="BSD License"),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
+    authentication_classes=[], 
 )
 
 urlpatterns = [
@@ -46,6 +47,6 @@ urlpatterns = [
     path('', home, name='home'),
 ]
 
-if settings.DEBUG:
+if not settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
