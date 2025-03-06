@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.contrib.auth import views as auth_views
-from .views import JobCategoryViewSet, JobPostViewSet, RegisterView, UserProfileView, send_test_email, activate
+from .views import ApplyJobView, JobCategoryViewSet, JobPostViewSet, RegisterView, UserProfileView, send_test_email, activate
 
 router = DefaultRouter()
 router.register(r'categories', JobCategoryViewSet)
@@ -20,4 +20,5 @@ urlpatterns = [
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='password_reset_confirm.html'), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
+    path('apply/', ApplyJobView.as_view(), name='apply_job'),
 ]

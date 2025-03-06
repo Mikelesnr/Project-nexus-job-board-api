@@ -1,14 +1,15 @@
+import tempfile
 from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .models import JobCategory, JobPost
-from .serializers import JobCategorySerializer, JobPostSerializer, RegisterSerializer, UserProfileSerializer
+from .serializers import JobCategorySerializer, JobPostSerializer, RegisterSerializer, UserProfileSerializer, JobApplicationSerializer
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.parsers import MultiPartParser, FormParser
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import JobPostFilter
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.http import HttpResponse
@@ -20,13 +21,15 @@ from django.contrib.auth import get_user_model
 from .tokens import account_activation_token
 from datetime import datetime
 import os
+from .models import JobCategory, JobPost, JobApplication
+from ftpretty import ftpretty
+from django.conf import settings
 from dotenv import load_dotenv
+import logging
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 # Create your views here.
-
-User = get_user_model()
-
-# views.py
 
 User = get_user_model()
 
@@ -158,3 +161,53 @@ class RegisterView(generics.CreateAPIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+logger = logging.getLogger(__name__)
+
+class ApplyJobView(generics.CreateAPIView):
+    queryset = JobApplication.objects.all()
+    serializer_class = JobApplicationSerializer
+    permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('job_post_id', openapi.IN_FORM, type=openapi.TYPE_INTEGER, required=True),
+            openapi.Parameter('cover_letter', openapi.IN_FORM, type=openapi.TYPE_STRING, required=True),
+            openapi.Parameter('cv', openapi.IN_FORM, type=openapi.TYPE_FILE, required=True),
+        ],
+        responses={201: JobApplicationSerializer()},
+    )
+    def post(self, request, *args, **kwargs):
+        job_post = get_object_or_404(JobPost, id=request.data.get('job_post_id'))
+        user = request.user
+
+        cover_letter = request.data.get('cover_letter')
+        cv_file = request.FILES.get('cv')
+
+        try:
+            # Save the InMemoryUploadedFile to a temporary file
+            with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+                for chunk in cv_file.chunks():
+                    tmp_file.write(chunk)
+                tmp_file_path = tmp_file.name
+
+            # Handle file upload to FTP server
+            ftp = ftpretty(settings.FTP_HOST, settings.FTP_USER, settings.FTP_PASS)
+            cv_path = f'{settings.FTP_DIR}/uploads/{user.username}/{cv_file.name}'
+            ftp.put(tmp_file_path, cv_path)
+
+            # Remove the temporary file
+            os.remove(tmp_file_path)
+
+            application = JobApplication.objects.create(
+                user=user,
+                job_post=job_post,
+                cover_letter=cover_letter,
+                cv_path=cv_path,
+            )
+
+            return Response(JobApplicationSerializer(application).data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(f'Error while applying for job: {e}')
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
