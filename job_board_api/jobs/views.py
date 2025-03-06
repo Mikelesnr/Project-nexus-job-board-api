@@ -12,7 +12,7 @@ from .filters import JobPostFilter
 from django.shortcuts import render, get_object_or_404
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.http import HttpResponse
+from django.http import FileResponse, HttpResponse, HttpResponseNotFound
 from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
 from django.urls import reverse
 from job_board_api.settings import EMAIL_HOST_USER
@@ -28,6 +28,7 @@ from dotenv import load_dotenv
 import logging
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from rest_framework.views import APIView
 
 # Create your views here.
 
@@ -227,3 +228,39 @@ class EmployerViewApplications(generics.ListAPIView):
         # filter job posts by the current employer
         # Example: return JobPost.objects.filter(employer=self.request.user)
         return JobPost.objects.all()
+
+class DownloadCVView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                'path',
+                openapi.IN_QUERY,
+                description="Path to the CV file",
+                type=openapi.TYPE_STRING,
+                required=True
+            ),
+        ],
+        responses={200: 'File Downloaded', 404: 'CV path not provided or failed to download CV'}
+    )
+    def get(self, request, *args, **kwargs):
+        cv_path = request.query_params.get('path')
+        if not cv_path:
+            return HttpResponseNotFound('CV path not provided.')
+
+        try:
+            ftp = ftpretty(settings.FTP_HOST, settings.FTP_USER, settings.FTP_PASS)
+            with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
+                ftp.get(cv_path, tmp_file.name)
+                tmp_file_path = tmp_file.name
+
+            response = FileResponse(open(tmp_file_path, 'rb'))
+            response['Content-Disposition'] = f'attachment; filename="{os.path.basename(cv_path)}"'
+            return response
+        except Exception as e:
+            logger.error(f'Error downloading CV: {e}')
+            return HttpResponseNotFound('Failed to download CV.')
+        finally:
+            if os.path.exists(tmp_file_path):
+                os.remove(tmp_file_path)
