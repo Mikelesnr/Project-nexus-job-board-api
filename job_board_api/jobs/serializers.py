@@ -14,10 +14,18 @@ class UserApplicationSerializer(serializers.ModelSerializer):
 class ApplicantSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
     email = serializers.EmailField(source='user.email', read_only=True)
+    cv_url = serializers.SerializerMethodField()
 
     class Meta:
         model = JobApplication
-        fields = ['username', 'email', 'cover_letter', 'cv_path', 'submitted_at']
+        fields = ['username', 'email', 'cover_letter', 'cv_url', 'submitted_at']
+
+    def get_cv_url(self, obj):
+        request = self.context.get('request')
+        if request is not None:
+            return request.build_absolute_uri(f'/api/download_cv/?path={obj.cv_path}')
+        return f'/api/download_cv/?path={obj.cv_path}'
+
 
 class JobPostApplicationsSerializer(serializers.ModelSerializer):
     applicants = ApplicantSerializer(source='jobapplication_set', many=True, read_only=True)
