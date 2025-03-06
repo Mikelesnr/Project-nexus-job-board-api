@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.parsers import MultiPartParser, FormParser
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import JobPostFilter
 from django.shortcuts import render, get_object_or_404
@@ -25,6 +26,8 @@ from ftpretty import ftpretty
 from django.conf import settings
 from dotenv import load_dotenv
 import logging
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 # Create your views here.
 
@@ -165,7 +168,16 @@ class ApplyJobView(generics.CreateAPIView):
     queryset = JobApplication.objects.all()
     serializer_class = JobApplicationSerializer
     permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('job_post_id', openapi.IN_FORM, type=openapi.TYPE_INTEGER, required=True),
+            openapi.Parameter('cover_letter', openapi.IN_FORM, type=openapi.TYPE_STRING, required=True),
+            openapi.Parameter('cv', openapi.IN_FORM, type=openapi.TYPE_FILE, required=True),
+        ],
+        responses={201: JobApplicationSerializer()},
+    )
     def post(self, request, *args, **kwargs):
         job_post = get_object_or_404(JobPost, id=request.data.get('job_post_id'))
         user = request.user
@@ -182,7 +194,7 @@ class ApplyJobView(generics.CreateAPIView):
 
             # Handle file upload to FTP server
             ftp = ftpretty(settings.FTP_HOST, settings.FTP_USER, settings.FTP_PASS)
-            cv_path = f'{settings.FTP_DIR}/{user.username}/{cv_file.name}'
+            cv_path = f'{settings.FTP_DIR}/uploads/{user.username}/{cv_file.name}'
             ftp.put(tmp_file_path, cv_path)
 
             # Remove the temporary file
