@@ -1,8 +1,15 @@
 from rest_framework import serializers
-from .models import JobCategory, JobPost
+from .models import JobCategory, JobPost, JobApplication
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth.models import User
+
+
+class JobApplicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = JobApplication
+        fields = ['user', 'job_post', 'cover_letter', 'cv_path', 'submitted_at']
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)

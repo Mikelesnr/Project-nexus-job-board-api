@@ -30,4 +30,14 @@ class JobPost(models.Model):
     def __str__(self):
         return self.title
 
+class JobApplication(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    job_post = models.ForeignKey('JobPost', on_delete=models.CASCADE)
+    cover_letter = models.TextField()
+    cv_path = models.CharField(max_length=255)
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.job_post.title}'
+
 

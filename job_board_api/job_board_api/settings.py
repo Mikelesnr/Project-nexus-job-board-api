@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=1_9k0&e#fo2#)6k4ts2pred6ib(bi^od1#1mc+j@t5qz0f6^^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['139.84.227.102','127.0.0.1', 'localhost','michaelmwanza.site','www.michaelmwanza.site']
 
@@ -215,3 +215,10 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv('EMAIL')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
+
+# FTP configuration
+
+FTP_HOST = os.getenv('FTP_HOST')
+FTP_USER = os.getenv('FTP_USER')
+FTP_PASS = os.getenv('FTP_PASS')
+FTP_DIR = os.getenv('FTP_DIR')
