@@ -4,6 +4,27 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
+class UserApplicationSerializer(serializers.ModelSerializer):
+    job_post_title = serializers.CharField(source='job_post.title', read_only=True)
+
+    class Meta:
+        model = JobApplication
+        fields = ['job_post_title', 'cover_letter', 'cv_path', 'submitted_at']
+
+class ApplicantSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
+    email = serializers.EmailField(source='user.email', read_only=True)
+
+    class Meta:
+        model = JobApplication
+        fields = ['username', 'email', 'cover_letter', 'cv_path', 'submitted_at']
+
+class JobPostApplicationsSerializer(serializers.ModelSerializer):
+    applicants = ApplicantSerializer(source='jobapplication_set', many=True, read_only=True)
+
+    class Meta:
+        model = JobPost
+        fields = ['title', 'description', 'applicants']
 
 class JobApplicationSerializer(serializers.ModelSerializer):
     class Meta:

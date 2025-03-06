@@ -1,7 +1,7 @@
 import tempfile
 from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .serializers import JobCategorySerializer, JobPostSerializer, RegisterSerializer, UserProfileSerializer, JobApplicationSerializer
+from .serializers import JobCategorySerializer, JobPostApplicationsSerializer, JobPostSerializer, RegisterSerializer, UserProfileSerializer, JobApplicationSerializer, UserApplicationSerializer
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
@@ -211,3 +211,19 @@ class ApplyJobView(generics.CreateAPIView):
         except Exception as e:
             logger.error(f'Error while applying for job: {e}')
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class UserApplicationsView(generics.ListAPIView):
+    serializer_class = UserApplicationSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return JobApplication.objects.filter(user=self.request.user)
+
+class EmployerViewApplications(generics.ListAPIView):
+    serializer_class = JobPostApplicationsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # filter job posts by the current employer
+        # Example: return JobPost.objects.filter(employer=self.request.user)
+        return JobPost.objects.all()
