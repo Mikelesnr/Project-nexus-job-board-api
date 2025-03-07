@@ -38,10 +38,10 @@
         </div>
         <div class="content mt-4">
             <p>Hi {{ user.get_username }},</p>
-            <p>You're receiving this email because you requested a password reset for your user account at The Job Board. Please click the button below to reset your password:</p>
-            <p><a href="{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}" class="btn btn-primary">Reset Password</a></p>
+            <p>Thank you for registering at The Job Board. Please click the button below to activate your account:</p>
+            <p><a href="{{ activation_link }}" class="btn btn-primary">Activate Account</a></p>
             <p>If the button above does not work, please use the following link:</p>
-            <p><a href="{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}">{{ protocol }}://{{ domain }}{% url 'password_reset_confirm' uidb64=uid token=token %}</a></p>
+            <p><a href="{{ activation_link }}">{{ activation_link }}</a></p>
         </div>
         <div class="footer mt-4">
             <p>&copy; {{ year }} The Job Board. All rights reserved.</p>

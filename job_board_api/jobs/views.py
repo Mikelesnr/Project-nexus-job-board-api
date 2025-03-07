@@ -1,7 +1,10 @@
 import tempfile
 from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from .serializers import JobCategorySerializer, JobPostApplicationsSerializer, JobPostSerializer, RegisterSerializer, UserProfileSerializer, JobApplicationSerializer, UserApplicationSerializer
+from .serializers import (
+    JobCategorySerializer, JobPostApplicationsSerializer, JobPostSerializer,
+    RegisterSerializer, UserProfileSerializer, JobApplicationSerializer, UserApplicationSerializer
+)
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.response import Response
@@ -13,10 +16,9 @@ from django.shortcuts import render, get_object_or_404
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.http import FileResponse, HttpResponse, HttpResponseNotFound
-from django.utils.http import urlsafe_base64_decode,urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.urls import reverse
-from job_board_api.settings import EMAIL_HOST_USER
-from django.utils.encoding import force_str,force_bytes
+from django.utils.encoding import force_str, force_bytes
 from django.contrib.auth import get_user_model
 from .tokens import account_activation_token
 from datetime import datetime
@@ -49,8 +51,6 @@ def activate(request, uidb64, token):
     else:
         return Response({'error': 'Activation link is invalid!'}, status=status.HTTP_400_BAD_REQUEST)
 
-
-#test smtp email configuration
 def send_test_email(request):
     subject = 'Test Email'
     message = 'This is a test email sent from Django.'
@@ -61,61 +61,10 @@ def send_test_email(request):
     
     return HttpResponse('Email sent successfully!')
 
-
 def home(request):
     return render(request, 'home.html')
 
-class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    permission_classes = (AllowAny,)
-    serializer_class = RegisterSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        
-        try:
-            user = serializer.save()
-            refresh = RefreshToken.for_user(user)
-
-            return Response({
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }, status=status.HTTP_201_CREATED)
-
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-class UserProfileView(generics.RetrieveUpdateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserProfileSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        return self.request.user
-
-class JobCategoryViewSet(viewsets.ModelViewSet):
-    queryset = JobCategory.objects.all()
-    serializer_class = JobCategorySerializer
-
-class JobPostViewSet(viewsets.ModelViewSet):
-    queryset = JobPost.objects.all()
-    serializer_class = JobPostSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_class = JobPostFilter
-
-    def get_permissions(self):
-        if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            self.permission_classes = [IsAuthenticated]
-        else:
-            self.permission_classes = [AllowAny]
-        return super().get_permissions()
-
-    def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
-
-
-account_activation_token
+# views.py
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -213,6 +162,34 @@ class ApplyJobView(generics.CreateAPIView):
             logger.error(f'Error while applying for job: {e}')
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class UserProfileView(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+class JobCategoryViewSet(viewsets.ModelViewSet):
+    queryset = JobCategory.objects.all()
+    serializer_class = JobCategorySerializer
+
+class JobPostViewSet(viewsets.ModelViewSet):
+    queryset = JobPost.objects.all()
+    serializer_class = JobPostSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = JobPostFilter
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            self.permission_classes = [IsAuthenticated]
+        else:
+            self.permission_classes = [AllowAny]
+        return super().get_permissions()
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
 class UserApplicationsView(generics.ListAPIView):
     serializer_class = UserApplicationSerializer
     permission_classes = [IsAuthenticated]
@@ -225,8 +202,6 @@ class EmployerViewApplications(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # filter job posts by the current employer
-        # Example: return JobPost.objects.filter(employer=self.request.user)
         return JobPost.objects.all()
 
 class DownloadCVView(APIView):
