@@ -64,8 +64,6 @@ def send_test_email(request):
 def home(request):
     return render(request, 'home.html')
 
-# views.py
-
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
