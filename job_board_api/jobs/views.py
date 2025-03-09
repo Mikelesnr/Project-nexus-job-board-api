@@ -81,9 +81,10 @@ class RegisterView(generics.CreateAPIView):
             # Generate token
             token = account_activation_token.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
-            activation_link = request.build_absolute_uri(
-                reverse('activate', kwargs={'uidb64': uid, 'token': token})
-            )
+
+            # Use frontend URL from environment variable
+            frontend_url = settings.FRONTEND_URL
+            activation_link = f"{frontend_url}/auth/{uid}/{token}"
 
             # Render email template
             email_subject = 'Activate Your Job Board Account'
@@ -104,6 +105,9 @@ class RegisterView(generics.CreateAPIView):
             )
 
             return Response({
+                'uid': uid,
+                'token': token,
+                'activation_link': activation_link,
                 'message': 'User registered successfully. Please check your email to activate your account.'
             }, status=status.HTTP_201_CREATED)
 

@@ -1,12 +1,9 @@
 # Job Board Backend
 
-## Real-World Application
-
-This project prepares developers to build robust backend systems for platforms requiring complex role management and efficient data retrieval. Participants gain experience with:
+This project demontrates how to build robust backend systems for platforms requiring complex role management and efficient data retrieval. Areas covered include with:
 
 - Role-based access control and secure authentication.
 - Designing efficient database schemas.
-- Optimizing query performance for large datasets.
 
 ## Overview
 
@@ -24,16 +21,12 @@ The primary objectives of the job board backend are:
 
 - Implement role-based access control for admins and users.
 
-### Database Efficiency
-
-- Optimize job search with advanced query indexing.
-
 ## Technologies Used
 
 | Technology | Purpose                                           |
 | ---------- | ------------------------------------------------- |
 | Django     | High-level Python framework for rapid development |
-| PostgreSQL | Database for storing job board data               |
+| MySQL      | Database for storing job board data               |
 | JWT        | Secure role-based authentication                  |
 | Swagger    | API endpoint documentation                        |
 
@@ -58,148 +51,170 @@ The primary objectives of the job board backend are:
 
 - Use Swagger for detailed API documentation.
 - Host documentation at `/swagger/` for frontend integration.
+- Use openai for detailed API documentation.
+- Host documentation at `/redoc/` for frontend integration.
 
 ## Routes and Deliverables
 
 ### Job Postings
 
 - **GET /api/jobs/**: Retrieve all job postings.
-  - Deliverable: List of job postings with details (title, description, location, company_name, category, created_by).
-  - This route can be filtered by title, category, and created_by.
+
+  - **Deliverable**: List of job postings with details (title, description, location, category, created_by).
+  - **Filtering**: This route can be filtered by title, category, and created_by.
+
 - **GET /api/jobs/{id}/**: Retrieve a specific job posting by ID.
-  - Deliverable: Details of the specified job posting.
+
+  - **Deliverable**: Details of the specified job posting.
+
 - **POST /api/jobs/**: Create a new job posting.
-  - Deliverable: Newly created job posting details.
+
+  - **Deliverable**: Newly created job posting details.
+
 - **PUT /api/jobs/{id}/**: Update an existing job posting by ID.
-  - Deliverable: Updated job posting details.
+
+  - **Deliverable**: Updated job posting details.
+
 - **DELETE /api/jobs/{id}/**: Delete an existing job posting by ID.
-  - Deliverable: Confirmation of job posting deletion.
+  - **Deliverable**: Confirmation of job posting deletion.
 
 ### Job Categories
 
 - **GET /api/categories/**: Retrieve all job categories.
-  - Deliverable: List of job categories.
+
+  - **Deliverable**: List of job categories.
+
 - **POST /api/categories/**: Create a new job category.
-  - Deliverable: Newly created job category details.
+
+  - **Deliverable**: Newly created job category details.
+
 - **PUT /api/categories/{id}/**: Update an existing job category by ID.
-  - Deliverable: Updated job category details.
+
+  - **Deliverable**: Updated job category details.
+
 - **DELETE /api/categories/{id}/**: Delete an existing job category by ID.
-  - Deliverable: Confirmation of job category deletion.
+  - **Deliverable**: Confirmation of job category deletion.
 
 ### Job Applications
 
-- **POST /api/jobs/{id}/apply/**: Apply for a job posting by ID.
-  - Deliverable: Confirmation of job application submission.
-- **GET /api/users/{id}/applications/**: Retrieve all job applications for a user by user ID.
-  - Deliverable: List of job applications with details.
+- **POST /api/apply/**: Apply for a job.
+
+  - **Deliverable**: Confirmation of job application submission.
+
+- **GET /api/user/applications/**: Retrieve all job applications for the authenticated user.
+
+  - **Deliverable**: List of job applications with details.
+
+- **GET /api/employer/applications/**: Retrieve all job applications for job posts created by the authenticated employer.
+  - **Deliverable**: List of job applications with details.
 
 ### Authentication
 
 - **POST /api/auth/login/**: User login.
-  - Deliverable: JWT token for authenticated access.
+
+  - **Deliverable**: JWT token for authenticated access.
+
+- **POST /api/auth/refresh/**: Refresh JWT token.
+
+  - **Deliverable**: New JWT token.
+
 - **POST /api/auth/register/**: User registration.
-  - Deliverable: Confirmation of user registration.
+
+  - **Deliverable**: Confirmation of user registration.
+
+- **GET /api/auth/profile/**: Retrieve the profile of the authenticated user.
+  - **Deliverable**: Profile details of the authenticated user.
+
+### Email Confirmation and User Activation
+
+- **POST /api/send-email/**: Send a test email.
+
+  - **Deliverable**: Confirmation of email sent.
+
+- **GET /api/activate/{uidb64}/{token}/**: Activate the user account.
+  - **Deliverable**: Confirmation of account activation.
+
+### Password Reset
+
+- **POST /api/password_reset/**: Request a password reset.
+
+  - **Deliverable**: Confirmation of password reset email sent.
+
+- **GET /api/password_reset/done/**: Confirmation page after password reset email is sent.
+
+  - **Deliverable**: Password reset done page.
+
+- **GET /api/reset/{uidb64}/{token}/**: Password reset confirmation link.
+
+  - **Deliverable**: Password reset confirmation page.
+
+- **POST /api/reset/done/**: Confirmation page after password is reset.
+  - **Deliverable**: Password reset complete page.
+
+### File Download
+
+- **GET /api/download_cv/**: Download a CV file.
+  - **Deliverable**: CV file download.
 
 ## Project Setup
 
 ### Prerequisites
 
 - Python (version 3.8 or higher)
-- PostgreSQL
+- MySQL/Postgresql/sqlite
 - Virtualenv
 
 ### Step 1: Clone the Repository
 
-- bash:
-- git clone https://github.com/your-repo/job-board-backend.git
-- cd job-board-backend
+```bash
+git clone https://github.com/your-repo/job-board-backend.git
+cd job-board-backend
+```
 
 ### Step 2: Set Up Virtual Environment
 
-- bash:
 - python -m venv venv
 - source venv/bin/activate
 
 ### Step 3: Install Dependencies
 
-- pip install -r requirements.txt (requrements.txt is inside the job_board_api app)
+- pip install -r requirements.txt (you have to be in the directory with the requirements.txt)
 
-### Step 4: Set Up PostgreSQL Database
+### Step 4: Set Up MySQL Database or Postgresssql
 
-- install PostgreSQL (google how to do this for your os)
-- Start PostgreSQL service:
-  - For Ubuntu: sudo systemctl start postgresql
-  - For macOS (using Homebrew): brew services start postgresql
-- Create a new PostgreSQL user:
-  - bash:
-  - sudo -i -u postgres
-  - createuser --interactive
-- Create a new PostgreSQL database:
-  - bash:
-  - createdb job_board_db
-- Set a password for the PostgreSQL user:
-  - bash
-  - psql
-- In the PostgreSQL prompt, set a password for the user you just created:
-  - Sql
-  - ALTER USER your_postgres_user WITH PASSWORD 'your_password';
-  - \q
+- I will only document mysql though I used postgress for this project
+- Install MySQL (Google how to do this for your OS)
+- Start MySQL service:
+- For Ubuntu: sudo systemctl start mysql
+- For macOS (using Homebrew): brew services start mysql
+- Create a new MySQL user:
+- Bash
+- sudo mysql
+  CREATE USER 'user'@'localhost' IDENTIFIED BY 'password';
+  GRANT ALL PRIVILEGES ON _._ TO 'user'@'localhost';
+  FLUSH PRIVILEGES;
+  EXIT;
+- mysql -u user -p
+  CREATE DATABASE job_board_db;
+  EXIT;
 
-### Step 5: Configure Django to Use PostgreSQL
+### Step 5: Configure Django to Use MySQL
 
-- Install PostgreSQL dependencies:pip
-  - install psycopg2-binary
+- Install MySQL dependencies:
+- pip install mysqlclient
 - Update settings.py file:
+  change DATABASE SETTINGS from postgress to mysql
+  'ENGINE': 'django.db.backends.mysql'
+  'HOST': 'localhost',
+  'PORT': '3306',
+- run migrations
+  python manage.py migrate
 
-  - python:
-  - DATABASES = {
-    'default': {
-    'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'job_board_db',
-    'USER': 'your_postgres_user',
-    'PASSWORD': 'your_password',
-    'HOST': 'localhost',
-    'PORT': '5432',
-    }
-    }
+### Step 6: Setup smtp email
 
-### Step 6: Apply Migrations
+- google how to create an app password for your email provider: in my case gmail
+- modidy the Email settings in settings.py (user regitration will not work without setting up email)
 
-- bash:
-- python manage.py migrate
-
-### Step 7: Run the Development Server
+### Run app
 
 - python manage.py runserver
-
-### Step 8: Access the Application
-
-- Open your web browser and navigate to:
-- http://127.0.0.1:8000
-
-### Useful Sites
-
-Here are some useful documentation sites for the technologies used in this project:
-
-- **Django Documentation**
-
-  - [Django Official Documentation](https://docs.djangoproject.com/en/stable/)
-  - Comprehensive guide for Django, including tutorials, references, and how-to guides.
-
-- **PostgreSQL Documentation**
-
-  - [PostgreSQL Official Documentation](https://www.postgresql.org/docs/)
-  - Detailed documentation for PostgreSQL, including setup, configuration, and SQL commands.
-
-- **JWT (JSON Web Tokens) Documentation**
-
-  - [JWT Introduction](https://jwt.io/introduction/)
-  - An overview of JSON Web Tokens and how they work.
-  - [PyJWT Documentation](https://pyjwt.readthedocs.io/en/stable/)
-  - Documentation for the PyJWT library used for encoding and decoding JWT in Python.
-
-- **Swagger Documentation**
-  - [Swagger Official Documentation](https://swagger.io/docs/)
-  - Documentation for Swagger, including OpenAPI Specification, tools, and tutorials.
-  - [drf-yasg Documentation](https://drf-yasg.readthedocs.io/en/stable/)
-  - Documentation for drf-yasg, a tool for generating real Swagger/OpenAPI 2.0 specifications from a Django Rest Framework API.
