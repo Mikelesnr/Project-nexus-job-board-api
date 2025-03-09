@@ -222,3 +222,6 @@ FTP_HOST = os.getenv('FTP_HOST')
 FTP_USER = os.getenv('FTP_USER')
 FTP_PASS = os.getenv('FTP_PASS')
 FTP_DIR = os.getenv('FTP_DIR')
+
+# front-end URL
+FRONTEND_URL = os.getenv('FRONTEND_URL')
