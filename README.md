@@ -207,8 +207,14 @@ cd job-board-backend
   'ENGINE': 'django.db.backends.mysql'
   'HOST': 'localhost',
   'PORT': '3306',
+- run migrations
+  python manage.py migrate
 
 ### Step 6: Setup smtp email
 
 - google how to create an app password for your email provider: in my case gmail
-- modidy the Emanil settings in settings.py (user regitration will not work without setting up email)
+- modidy the Email settings in settings.py (user regitration will not work without setting up email)
+
+### Run app
+
+- python manage.py runserver
