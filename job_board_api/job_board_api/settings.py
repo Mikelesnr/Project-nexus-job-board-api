@@ -63,6 +63,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://alx-project-nexus-pi.vercel.app"
 ]
 
 # If you want to allow all origins (not recommended for production)

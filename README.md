@@ -7,7 +7,7 @@ This project demontrates how to build robust backend systems for platforms requi
 
 ## Overview
 
-This case study focuses on creating a backend for a Job Board Platform. The backend facilitates job postings, role-based access control, and efficient job search features. It integrates advanced database optimization and comprehensive API documentation.
+This project focuses on creating a backend for a Job Board Platform. The backend facilitates job postings, role-based access control, and efficient job search features. It integrates advanced database optimization and comprehensive API documentation.
 
 ## Project Goals
 
