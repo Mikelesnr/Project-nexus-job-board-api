@@ -26,7 +26,7 @@ The primary objectives of the job board backend are:
 | Technology | Purpose                                           |
 | ---------- | ------------------------------------------------- |
 | Django     | High-level Python framework for rapid development |
-| MySQL      | Database for storing job board data               |
+| Postgresql | Database for storing job board data               |
 | JWT        | Secure role-based authentication                  |
 | Swagger    | API endpoint documentation                        |
 
